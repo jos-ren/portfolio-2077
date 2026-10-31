@@ -1,26 +1,118 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Lets `dark:` utilities follow the data-theme attribute instead of the OS setting */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #fcfcfc; /* Canvas: 60% dominant white, open space */
+  --text: #255283; /* Structure: type, rules, footer */
+  --surface: #fe6e8f; /* Feature: 30% secondary surfaces, featured cards */
+  --primary: #dc1705; /* Action: primary CTA, active nav */
+  --accent: #84fd62; /* Signal: 10% hover, badges, accents */
+  /* Blue stands in for the dark theme's green in headings, links and labels */
+  --link: var(--text);
+  --heading: var(--text);
+  --label: var(--text);
+  --hover: var(--primary);
+  --glitch-b: var(--primary);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #323232; /* Canvas: 60% dark gray base, depth */
+  --text: #d4d3d4; /* Reading: body, subheads, subtle borders */
+  --surface: #878688; /* Surface: 30% cards, panels, raised surfaces */
+  --primary: #feee00; /* Primary: CTA, headings, logo, active nav */
+  --accent: #35fcc8; /* Secondary: 10% buttons, links, hover, tech tags */
+  --link: var(--accent);
+  --heading: var(--accent);
+  --label: var(--accent);
+  --hover: var(--primary);
+  --glitch-b: var(--accent);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: var(--bg);
+  --color-text: var(--text);
+  --color-surface: var(--surface);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-link: var(--link);
+  --color-heading: var(--heading);
+  --color-label: var(--label);
+  --color-hover: var(--hover);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-serif: var(--font-instrument-serif), serif;
+  --font-display: var(--font-weird-horses), var(--font-geist-sans);
+  --font-bebas: var(--font-bebas-src), var(--font-geist-sans);
+  --font-orbitron: var(--font-orbitron-src), var(--font-geist-sans);
+  --font-vt323: var(--font-vt323-src), var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-geist-sans), sans-serif;
 }
+
+/* Glitch effect disabled for now. Restore by removing this comment.
+RGB-split copies of the text, sliced and jittered while data-active is set.
+
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch[data-active="true"] {
+  animation: glitch-shake 0.2s steps(2, end) infinite;
+}
+
+.glitch[data-active="true"]::before,
+.glitch[data-active="true"]::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.glitch[data-active="true"]::before {
+  color: var(--primary);
+  animation: glitch-slice-a 0.3s steps(1, end) infinite;
+}
+
+.glitch[data-active="true"]::after {
+  color: var(--glitch-b);
+  animation: glitch-slice-b 0.25s steps(1, end) infinite;
+}
+
+@keyframes glitch-shake {
+  0% { transform: translate(0, 0) skewX(0); }
+  50% { transform: translate(2px, -1px) skewX(-4deg); }
+  100% { transform: translate(-2px, 1px) skewX(3deg); }
+}
+
+@keyframes glitch-slice-a {
+  0% { clip-path: inset(10% 0 70% 0); transform: translate(-5px, 0); }
+  25% { clip-path: inset(60% 0 10% 0); transform: translate(5px, 1px); }
+  50% { clip-path: inset(30% 0 40% 0); transform: translate(-3px, 0); }
+  75% { clip-path: inset(80% 0 0 0); transform: translate(4px, -1px); }
+}
+
+@keyframes glitch-slice-b {
+  0% { clip-path: inset(50% 0 30% 0); transform: translate(5px, 0); }
+  25% { clip-path: inset(0 0 85% 0); transform: translate(-4px, 1px); }
+  50% { clip-path: inset(70% 0 5% 0); transform: translate(3px, 0); }
+  75% { clip-path: inset(20% 0 55% 0); transform: translate(-5px, -1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch[data-active="true"],
+  .glitch[data-active="true"]::before,
+  .glitch[data-active="true"]::after {
+    animation: none;
+  }
+}
+*/
