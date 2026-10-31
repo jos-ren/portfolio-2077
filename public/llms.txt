@@ -7,6 +7,7 @@ Josh is open to new projects that mix solid code with good design. He works at T
 ## Projects
 
 - [Sors Finance](https://github.com/jos-ren/Sors-Finance): Personal finance app with a dashboard for monthly spending, net worth and trends. Also published as a Docker image.
+- [ShroomScout](https://github.com/jos-ren/ShroomScout): iOS mushroom foraging app built in Swift. Identifies mushroom species with machine learning and maps your finds.
 - [Flag Guessr](https://jos-ren.github.io/flag-guessr/): Flag quiz game with world and continent modes. Source: https://github.com/jos-ren/flag-guessr
 - [Room Planner](https://alexrussell.dev/room-planner/?mode=floor): Floor plan editor for laying out rooms and furniture. Source: https://github.com/aj3x/room-planner
 - Muvi: Mobile app for tracking movies and shows. Not released yet.

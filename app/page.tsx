@@ -9,6 +9,7 @@ type Entry = { title: string; meta: string; href?: string };
 
 const projects: Entry[] = [
   { title: "Sors Finance", meta: "January 2026", href: "https://github.com/jos-ren/Sors-Finance" },
+  { title: "ShroomScout", meta: "January 2026", href: "https://github.com/jos-ren/ShroomScout" },
   { title: "Flag Guessr", meta: "June 2026", href: "https://jos-ren.github.io/flag-guessr/" },
   { title: "Room Planner", meta: "September 2026", href: "https://alexrussell.dev/room-planner/?mode=floor" },
   { title: "Muvi", meta: "Coming Soon" },

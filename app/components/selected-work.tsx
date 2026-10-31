@@ -58,16 +58,18 @@ const work: Work[] = [
     ],
   },
   {
-    label: "Flag Guessr",
-    links: [
-      { kind: "github", href: "https://github.com/jos-ren/flag-guessr" },
-      { kind: "website", href: "https://jos-ren.github.io/flag-guessr/" },
-    ],
+    label: "ShroomScout",
+    links: [{ kind: "github", href: "https://github.com/jos-ren/ShroomScout" }],
     frames: [
       {
-        kind: "browser",
-        src: "/projects/flag-guessr.png",
-        alt: "Flag Guessr home page with a play button and cards for world and continent flag quizzes",
+        kind: "phone",
+        src: "/projects/shroomscout-1.png",
+        alt: "ShroomScout species page for the Golden Chanterelle with rarity, edibility and a safety warning",
+      },
+      {
+        kind: "phone",
+        src: "/projects/shroomscout-2.png",
+        alt: "ShroomScout map of mushroom discoveries around Seattle with a list of nearby finds",
       },
     ],
   },
@@ -82,6 +84,20 @@ const work: Work[] = [
         kind: "browser",
         src: "/projects/room-planner.png",
         alt: "Room Planner floor view with a plan of five rooms, furniture and a properties panel",
+      },
+    ],
+  },
+  {
+    label: "Flag Guessr",
+    links: [
+      { kind: "github", href: "https://github.com/jos-ren/flag-guessr" },
+      { kind: "website", href: "https://jos-ren.github.io/flag-guessr/" },
+    ],
+    frames: [
+      {
+        kind: "browser",
+        src: "/projects/flag-guessr.png",
+        alt: "Flag Guessr home page with a play button and cards for world and continent flag quizzes",
       },
     ],
   },
@@ -373,7 +389,7 @@ function FullScreenView({
                 // close together; browser shots share Room Planner's 2880:1572 ratio, as large as fits
                 <div
                   key={src}
-                  className={`relative min-w-0 ${
+                  className={`relative min-w-0 border-4 border-heading ${
                     kind === "phone"
                       ? "aspect-[1206/2622] h-full"
                       : "aspect-[2880/1572] w-[min(calc(100dvw-12rem),calc((100dvh-7.5rem)*2880/1572))] self-center"
@@ -384,7 +400,9 @@ function FullScreenView({
                     alt={alt}
                     fill
                     sizes="100vw"
-                    className={kind === "phone" ? "object-contain" : "object-cover object-top"}
+                    // Cover, not contain: the border shrinks the box slightly off the screenshot's
+                    // ratio, and contain would leave thin gaps above and below phone shots
+                    className={kind === "phone" ? "object-cover" : "object-cover object-top"}
                   />
                 </div>
               ))}
@@ -396,8 +414,10 @@ function FullScreenView({
                 </p>
                 <ProjectLinks project={project} />
               </div>
-              {/* Mirrors the title menu on the right edge */}
-              <div className="absolute top-full right-0 z-10 mt-4 flex items-center gap-2 bg-heading p-2 shadow-lg">
+            </div>
+            {/* Nav menu is centered on the screen, positioned against the dialog rather than
+                the screenshots, level with the title menu */}
+              <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 bg-heading p-2 shadow-lg">
               {canStep && (
                 <>
                   <button
@@ -467,7 +487,6 @@ function FullScreenView({
                 </svg>
               </button>
               </div>
-            </div>
           </div>
           <MobileGallery project={project} onSelect={onSelect} onClose={onClose} />
         </>
