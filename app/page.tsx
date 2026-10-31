@@ -30,9 +30,12 @@ const projects: Entry[] = [
 const link =
   "border-b border-text/25 transition-colors hover:border-hover hover:text-hover";
 
+// Section dividers hidden for now. Restore with "border-t border-surface pt-4"
+const divider = "";
+
 function Section({ title, entries }: { title: string; entries: Entry[] }) {
   return (
-    <section className="border-t border-surface pt-4">
+    <section className={divider}>
       <h2 className="text-sm text-label">{title}</h2>
       <ul className="mt-6 flex flex-col gap-3">
         {entries.map(({ title, meta, href }) => (
@@ -69,13 +72,13 @@ const whatsUp = [
       </>
     ),
   },
-  { label: "Learning", value: "Frontend architecture" },
+  { label: "Currently learning", value: "Frontend architecture" },
   { label: "Tinkering with", value: "3D printed cityscapes" },
 ];
 
 function WhatsUp() {
   return (
-    <section className="border-t border-surface pt-4">
+    <section className={divider}>
       <h2 className="text-sm text-label">What&apos;s Up?</h2>
       <dl className="mt-6 flex flex-col gap-5">
         {whatsUp.map(({ label, value }) => (
@@ -99,7 +102,7 @@ function About() {
         Josh is a developer and designer based in Vancouver.
       </p>
       <div className="flex flex-col items-center gap-3 text-text/70">
-        <a href="mailto:hello@example.com" className={`${link} inline-flex items-center gap-2`}>
+        <a href="mailto:joshua@renema.ca" className={`${link} inline-flex items-center gap-2`}>
           <svg
             className="size-4"
             viewBox="0 0 24 24"
@@ -113,7 +116,7 @@ function About() {
             <path d="m22 2-7 20-4-9-9-4 20-7z" />
             <path d="M22 2 11 13" />
           </svg>
-          hello@example.com
+          joshua@renema.ca
         </a>
         <p>Currently open to new projects</p>
         <p>Thank you for stopping by.</p>
@@ -160,6 +163,7 @@ export default function Home() {
             I’m Josh, a full stack developer with a soft spot for design, living in beautiful
             Vancouver. I ship with effort, care and taste.
           </p>
+          {/* Hidden for now
           <p>
             I work at{" "}
             <a
@@ -174,9 +178,10 @@ export default function Home() {
             find me shooting photos around Vancouver or spending way too much time making my own
             apps.
           </p>
+          */}
           <p>
             If you have a project that mixes solid code with good design,{" "}
-            <a href="mailto:hello@example.com" className={link}>
+            <a href="mailto:joshua@renema.ca" className={link}>
               send me a message
             </a>
             . I’m always up for something new.
