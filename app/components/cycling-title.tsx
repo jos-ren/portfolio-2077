@@ -57,14 +57,18 @@ export function CyclingTitle({ children }: { children: React.ReactNode }) {
 
   // text-7xl / sm:text-9xl sizes (4.5rem / 8rem), multiplied by the per-font scale.
   // Line height stays at the full size so a scaled-down font keeps the same vertical space.
-  // pl-4 -ml-4 puts the glyphs' left overhang (the J's tail) inside the box, so WebKit on iOS
-  // cannot clip it to the layer bounds. The negative margin keeps the text where it was.
+  // These display fonts draw well outside their glyph boxes (the J's tail, swashes past the N).
+  // WebKit only repaints a text box's own bounds when the font changes, so on iOS that ink was
+  // left behind as fragments or cut off. The 0.75em padding makes the h1's box cover all of
+  // it, and the matching negative margins keep the text where it was. em keeps the room in
+  // proportion at both font sizes. The padding ignores pointer events so only the word itself
+  // is clickable and the text around it stays selectable.
   return (
     <h1
       onClick={cycle}
-      className="mt-6 relative -ml-4 left-[var(--title-shift,0px)] cursor-pointer select-none pl-4 self-start transition-transform duration-300 ease-out hover:scale-[1.02] active:scale-[0.98] font-display text-[length:calc(4.5rem*var(--title-scale,1))] leading-[4.5rem] tracking-tight text-heading sm:left-0 sm:text-[length:calc(8rem*var(--title-scale,1))] sm:leading-[8rem]"
+      className="pointer-events-none relative -mx-[0.75em] mt-[calc(1.5rem-0.75em)] -mb-[0.75em] left-[var(--title-shift,0px)] select-none self-start p-[0.75em] transition-transform duration-300 ease-out hover:scale-[1.02] active:scale-[0.98] font-display text-[length:calc(4.5rem*var(--title-scale,1))] leading-[4.5rem] tracking-tight text-heading sm:left-0 sm:text-[length:calc(8rem*var(--title-scale,1))] sm:leading-[8rem]"
     >
-      {children}
+      <span className="pointer-events-auto cursor-pointer">{children}</span>
     </h1>
   );
 }
