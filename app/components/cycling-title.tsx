@@ -48,7 +48,7 @@ export function CyclingTitle({ children }: { children: React.ReactNode }) {
   return (
     <h1
       onClick={cycle}
-      className="mt-6 translate-x-[var(--title-shift,0px)] cursor-pointer select-none font-display text-[length:calc(4.5rem*var(--title-scale,1))] leading-[4.5rem] tracking-tight text-heading sm:translate-x-0 sm:text-[length:calc(8rem*var(--title-scale,1))] sm:leading-[8rem]"
+      className="mt-6 relative left-[var(--title-shift,0px)] cursor-pointer select-none font-display text-[length:calc(4.5rem*var(--title-scale,1))] leading-[4.5rem] tracking-tight text-heading sm:left-0 sm:text-[length:calc(8rem*var(--title-scale,1))] sm:leading-[8rem]"
     >
       {children}
     </h1>
