@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type FrameKind = "phone" | "browser";
@@ -151,6 +151,9 @@ function LinkIcon({ kind }: { kind: LinkKind }) {
   );
 }
 
+// Gallery tile image sizes, also reused as the full screen preview so it comes from cache
+const TILE_SIZES: Record<FrameKind, string> = { phone: "8rem", browser: "26rem" };
+
 function Frame({ spec }: { spec: FrameSpec }) {
   const kind = typeof spec === "string" ? spec : spec.kind;
   const size =
@@ -166,7 +169,7 @@ function Frame({ spec }: { spec: FrameSpec }) {
           src={spec.src}
           alt={spec.alt}
           fill
-          sizes={kind === "phone" ? "8rem" : "26rem"}
+          sizes={TILE_SIZES[kind]}
           className={`object-cover ${kind === "phone" ? "object-bottom" : "object-top"}`}
         />
       </div>
@@ -187,6 +190,83 @@ function Frame({ spec }: { spec: FrameSpec }) {
 // Only frames with a real screenshot can be opened full screen
 const screenshots = (frames: FrameSpec[]) =>
   frames.filter((spec): spec is Exclude<FrameSpec, FrameKind> => typeof spec !== "string");
+
+// Rendered widths of the full screen images. Desktop phone shots are sized from the viewport
+// height (minus the 7.5rem of padding) at the iPhone screenshot ratio, desktop browser shots fill
+// the width minus the side padding, and the phone gallery fills the width minus its gutters.
+const FULL_SIZES: Record<FrameKind, string> = {
+  phone: "(min-width: 640px) calc((100vh - 7.5rem) * 0.46), calc(100vw - 2rem)",
+  browser: "(min-width: 640px) calc(100vw - 12rem), calc(100vw - 2rem)",
+};
+
+// Downloads the full screen images ahead of time so they are cached before the view opens.
+// The image props match LoadingImage's, so the browser picks the same file from the srcset.
+const preloaded = new Map<string, HTMLImageElement>();
+function preloadFullScreen(project: Work) {
+  for (const { kind, src } of screenshots(project.frames)) {
+    if (preloaded.has(src)) continue;
+    const { props } = getImageProps({ src, alt: "", fill: true, sizes: FULL_SIZES[kind] });
+    const img = new window.Image();
+    if (props.sizes) img.sizes = props.sizes;
+    if (props.srcSet) img.srcset = props.srcSet;
+    img.src = props.src;
+    // Keeping a reference stops the request from being dropped
+    preloaded.set(src, img);
+  }
+}
+
+// Full screen image. When the full quality file is already cached (usually, thanks to
+// preloadFullScreen) it shows straight away with no preview or fade. Otherwise the small version
+// from the gallery tile shows first, which is usually cached too, and the full image fades in
+// over it once decoded. Callers key it by src so the state resets when the image changes.
+function LoadingImage({
+  kind,
+  src,
+  alt,
+  className,
+}: {
+  kind: FrameKind;
+  src: string;
+  alt: string;
+  className: string;
+}) {
+  const [state, setState] = useState<"loading" | "faded" | "instant">("loading");
+  return (
+    <>
+      {state !== "instant" && (
+        <Image
+          src={src}
+          alt=""
+          aria-hidden="true"
+          fill
+          loading="eager"
+          sizes={TILE_SIZES[kind]}
+          className={className}
+        />
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        loading="eager"
+        sizes={FULL_SIZES[kind]}
+        // Runs before the first paint, so a cached image never shows the preview at all
+        ref={(img) => {
+          if (img?.complete && img.naturalWidth > 0) setState((s) => (s === "loading" ? "instant" : s));
+        }}
+        // Next fires this after the image has decoded, so the fade starts from real pixels
+        onLoad={() => setState((s) => (s === "loading" ? "faded" : s))}
+        className={`${className} ${
+          state === "loading"
+            ? "opacity-0"
+            : state === "faded"
+              ? "opacity-100 transition-opacity duration-500 ease-out"
+              : "opacity-100"
+        }`}
+      />
+    </>
+  );
+}
 
 const controlButton =
   "flex size-10 cursor-pointer items-center justify-center rounded-none bg-bg text-text transition-colors hover:bg-primary hover:text-bg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
@@ -268,10 +348,10 @@ function MobileGallery({
         onScroll={handleScroll}
         className="absolute inset-0 flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {slides.map(({ src, alt }) => (
+        {slides.map(({ kind, src, alt }) => (
           <div key={src} className="h-full w-full shrink-0 snap-center snap-always px-4 pt-20 pb-28">
             <div className="relative h-full w-full">
-              <Image src={src} alt={alt} fill sizes="100vw" className="object-contain" />
+              <LoadingImage kind={kind} src={src} alt={alt} className="object-contain" />
             </div>
           </div>
         ))}
@@ -395,11 +475,10 @@ function FullScreenView({
                       : "aspect-[2880/1572] w-[min(calc(100dvw-12rem),calc((100dvh-7.5rem)*2880/1572))] self-center"
                   }`}
                 >
-                  <Image
+                  <LoadingImage
+                    kind={kind}
                     src={src}
                     alt={alt}
-                    fill
-                    sizes="100vw"
                     // Cover, not contain: the border shrinks the box slightly off the screenshot's
                     // ratio, and contain would leave thin gaps above and below phone shots
                     className={kind === "phone" ? "object-cover" : "object-cover object-top"}
@@ -626,7 +705,14 @@ export function SelectedWork() {
             {screenshots(frames).length > 0 && (
               <button
                 type="button"
-                onClick={() => setActive(project)}
+                // Hovering or focusing a tile starts loading its full screen images, and opening
+                // one loads the rest so stepping between projects never waits on the network
+                onPointerEnter={() => preloadFullScreen(project)}
+                onFocus={() => preloadFullScreen(project)}
+                onClick={() => {
+                  viewable.forEach(preloadFullScreen);
+                  setActive(project);
+                }}
                 aria-label={`View ${label} full screen`}
                 className="absolute inset-0 cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-accent"
               />
