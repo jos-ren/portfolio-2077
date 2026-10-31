@@ -1,3 +1,4 @@
+import { DockScroll } from "./dock-scroll";
 import { ThemeToggle } from "./theme-toggle";
 
 const iconButton =
@@ -5,9 +6,11 @@ const iconButton =
 
 export function Dock() {
   return (
+    <>
+    <DockScroll />
     <nav
       aria-label="Social links"
-      className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2 rounded-none bg-heading p-2 shadow-lg [body[data-fullscreen]_&]:hidden"
+      className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2 rounded-none bg-heading p-2 shadow-lg transition-transform duration-300 motion-reduce:transition-none [body[data-fullscreen]_&]:hidden [html[data-dock-hidden]_&]:max-sm:translate-y-[calc(100%+2rem)]"
     >
       <a href="https://github.com/jos-ren" aria-label="GitHub Link" className={iconButton}>
         <svg className="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -31,5 +34,6 @@ export function Dock() {
       </a>
       <ThemeToggle />
     </nav>
+    </>
   );
 }
