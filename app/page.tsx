@@ -11,19 +11,21 @@ const projects: Entry[] = [
   { title: "Sors Finance", meta: "January 2026", href: "https://github.com/jos-ren/Sors-Finance" },
   { title: "Flag Guessr", meta: "June 2026", href: "https://jos-ren.github.io/flag-guessr/" },
   { title: "Room Planner", meta: "September 2026", href: "https://alexrussell.dev/room-planner/?mode=floor" },
-  { title: "Muvi", meta: "upcoming" },
+  { title: "Muvi", meta: "Coming Soon" },
 ];
 
-const playground: Entry[] = [
-  { title: "Experiment One", meta: "March 2026", href: "#" },
-  { title: "Experiment Two", meta: "July 2026", href: "#" },
-];
+// Playground hidden for now
+// const playground: Entry[] = [
+//   { title: "Experiment One", meta: "March 2026", href: "#" },
+//   { title: "Experiment Two", meta: "July 2026", href: "#" },
+// ];
 
-const notes: Entry[] = [
-  { title: "Things I learned this year", meta: "10 min read", href: "#" },
-  { title: "On writing maintainable code", meta: "6 min read", href: "#" },
-  { title: "A short note on tooling", meta: "5 min read", href: "#" },
-];
+// Notes hidden for now
+// const notes: Entry[] = [
+//   { title: "Things I learned this year", meta: "10 min read", href: "#" },
+//   { title: "On writing maintainable code", meta: "6 min read", href: "#" },
+//   { title: "A short note on tooling", meta: "5 min read", href: "#" },
+// ];
 
 const link =
   "border-b border-text/25 transition-colors hover:border-hover hover:text-hover";
@@ -46,6 +48,43 @@ function Section({ title, entries }: { title: string; entries: Entry[] }) {
           </li>
         ))}
       </ul>
+    </section>
+  );
+}
+
+const whatsUp = [
+  {
+    label: "Working on",
+    value: (
+      <>
+        Software development at{" "}
+        <a
+          href="https://territorial.ca/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${link} text-text`}
+        >
+          Territorial
+        </a>
+      </>
+    ),
+  },
+  { label: "Learning", value: "Frontend architecture" },
+  { label: "Tinkering with", value: "3D printed cityscapes" },
+];
+
+function WhatsUp() {
+  return (
+    <section className="border-t border-surface pt-4">
+      <h2 className="text-sm text-label">What&apos;s Up?</h2>
+      <dl className="mt-6 flex flex-col gap-5">
+        {whatsUp.map(({ label, value }) => (
+          <div key={label} className="flex flex-col gap-1">
+            <dt className="text-text">{label}</dt>
+            <dd className="text-text/50">{value}</dd>
+          </div>
+        ))}
+      </dl>
     </section>
   );
 }
@@ -117,30 +156,35 @@ export default function Home() {
           */}
           <CyclingTitle>JOSREN</CyclingTitle>
           <p className="text-text/50">hello, こんにちは, bonjour</p>
-          <p>I’m Josh, a developer who ships with effort, care and taste.</p>
           <p>
-            Previously on a product team, now an independent engineer shaping ideas
-            through modern web workflows across frontend, tooling and design systems.
+            I’m Josh, a full stack developer with a soft spot for design, living in beautiful
+            Vancouver. I ship with effort, care and taste.
           </p>
           <p>
-            Recents include{" "}
-            <a href="#" className={link}>
-              Project One
-            </a>{" "}
-            on the web,{" "}
-            <a href="#" className={link}>
-              Project Two
-            </a>{" "}
-            with a great team, open source work with different communities{" "}
-            <a href="#" className={link}>
-              and more
+            I work at{" "}
+            <a
+              href="https://territorial.ca/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={link}
+            >
+              Territorial
             </a>
-            .
+            , where I build software for real people with real problems. Off the clock, you’ll
+            find me shooting photos around Vancouver or spending way too much time making my own
+            apps.
           </p>
           <p>
-            Explore my{" "}
+            If you have a project that mixes solid code with good design,{" "}
+            <a href="mailto:hello@example.com" className={link}>
+              send me a message
+            </a>
+            . I’m always up for something new.
+          </p>
+          <p>
+            Or have a look at some of my{" "}
             <a href="#selected-work" className={link}>
-              Selected work
+              projects
             </a>
             .
           </p>
@@ -151,8 +195,13 @@ export default function Home() {
 
         <div className="mx-auto flex w-full max-w-xl flex-col gap-12 px-6">
           <Section title="Projects" entries={projects} />
+          <WhatsUp />
+          {/* Playground hidden for now
           <Section title="Playground" entries={playground} />
+          */}
+          {/* Notes hidden for now
           <Section title="Notes" entries={notes} />
+          */}
         </div>
 
         <About />
