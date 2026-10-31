@@ -1,0 +1,17 @@
+# Josh Renema
+
+> Josh is a full stack developer with a soft spot for design, based in Vancouver. This is his portfolio, a single page showing selected work and ways to get in touch.
+
+Josh is open to new projects that mix solid code with good design. He works at Territorial, building software for real people with real problems.
+
+## Projects
+
+- [Sors Finance](https://github.com/jos-ren/Sors-Finance): Personal finance app with a dashboard for monthly spending, net worth and trends. Also published as a Docker image.
+- [Flag Guessr](https://jos-ren.github.io/flag-guessr/): Flag quiz game with world and continent modes. Source: https://github.com/jos-ren/flag-guessr
+- [Room Planner](https://alexrussell.dev/room-planner/?mode=floor): Floor plan editor for laying out rooms and furniture. Source: https://github.com/aj3x/room-planner
+- Muvi: Mobile app for tracking movies and shows. Not released yet.
+
+## Contact
+
+- Email: josh@renema.ca
+- GitHub: https://github.com/jos-ren

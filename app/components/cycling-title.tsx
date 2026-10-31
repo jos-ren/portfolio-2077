@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 // TEMP: click the title to cycle its font between Weird Horses, 403 Technul, SD Cyberpunk City, Bitblast Serif Textured, and Take No Prisoners.
 // Replace with a plain <h1> once a font is chosen.
 const STORAGE_KEY = "title-font"; // also read by FONT_SCRIPT in layout.tsx
@@ -15,8 +17,18 @@ const FONTS: { value: string | null; scale: number; shift: string | null }[] = [
   { value: "var(--font-take-no-prisoners)", scale: 1, shift: null },
 ];
 
+// next/font only downloads a face once text uses it, so the first switch to each font used to
+// flash a fallback. Loading every declared face up front (and before each switch) avoids that.
+const loadFonts = () =>
+  Promise.all(Array.from(document.fonts, (face) => face.load().catch(() => face)));
+
 export function CyclingTitle({ children }: { children: React.ReactNode }) {
-  function cycle() {
+  useEffect(() => {
+    loadFonts();
+  }, []);
+
+  async function cycle() {
+    await loadFonts();
     // .font-display reads --font-weird-horses, so point that variable at the next font
     const style = document.documentElement.style;
     const current = style.getPropertyValue("--font-weird-horses") || null;
@@ -45,10 +57,12 @@ export function CyclingTitle({ children }: { children: React.ReactNode }) {
 
   // text-7xl / sm:text-9xl sizes (4.5rem / 8rem), multiplied by the per-font scale.
   // Line height stays at the full size so a scaled-down font keeps the same vertical space.
+  // pl-4 -ml-4 puts the glyphs' left overhang (the J's tail) inside the box, so WebKit on iOS
+  // cannot clip it to the layer bounds. The negative margin keeps the text where it was.
   return (
     <h1
       onClick={cycle}
-      className="mt-6 relative left-[var(--title-shift,0px)] cursor-pointer select-none font-display text-[length:calc(4.5rem*var(--title-scale,1))] leading-[4.5rem] tracking-tight text-heading sm:left-0 sm:text-[length:calc(8rem*var(--title-scale,1))] sm:leading-[8rem]"
+      className="mt-6 relative -ml-4 left-[var(--title-shift,0px)] cursor-pointer select-none pl-4 self-start transition-transform duration-300 ease-out hover:scale-[1.02] active:scale-[0.98] font-display text-[length:calc(4.5rem*var(--title-scale,1))] leading-[4.5rem] tracking-tight text-heading sm:left-0 sm:text-[length:calc(8rem*var(--title-scale,1))] sm:leading-[8rem]"
     >
       {children}
     </h1>

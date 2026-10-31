@@ -21,7 +21,6 @@ type Work = {
   links?: ProjectLink[];
 };
 
-// TODO: the "#" hrefs below are placeholders until the real URLs are filled in
 const work: Work[] = [
   {
     label: "Muvi",
@@ -86,13 +85,6 @@ const work: Work[] = [
       },
     ],
   },
-  { label: "Project One", frames: ["phone", "phone", "phone"] },
-  { label: "Project Three", frames: ["phone", "phone"] },
-  { label: "Project Four", frames: ["browser"] },
-  { label: "Project Five", frames: ["phone", "phone", "phone"] },
-  { label: "Project Six", frames: ["browser"] },
-  { label: "Project Seven", frames: ["phone", "phone"] },
-  { label: "Project Eight", frames: ["browser"] },
 ];
 
 const LINK_LABELS: Record<LinkKind, string> = {
@@ -486,6 +478,47 @@ function FullScreenView({
 
 export function SelectedWork() {
   const [active, setActive] = useState<Work | null>(null);
+  const drag = useRef({ pressed: false, moved: false, startX: 0, startScroll: 0 });
+
+  // Mouse users can drag the gallery sideways. Touch and trackpads already scroll natively.
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    drag.current = {
+      pressed: true,
+      moved: false,
+      startX: event.clientX,
+      startScroll: event.currentTarget.scrollLeft,
+    };
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const state = drag.current;
+    const el = event.currentTarget;
+    if (!state.pressed) return;
+    const dx = event.clientX - state.startX;
+    if (!state.moved) {
+      if (Math.abs(dx) < 5) return;
+      state.moved = true;
+      // Capture only once dragging starts so plain clicks still reach the tile buttons.
+      // Snapping is paused so the scroll follows the cursor, then resumes on release.
+      el.setPointerCapture(event.pointerId);
+      el.style.scrollSnapType = "none";
+      el.style.cursor = "grabbing";
+      el.style.userSelect = "none";
+    }
+    el.scrollLeft = state.startScroll - dx;
+  }
+
+  function handlePointerEnd(event: React.PointerEvent<HTMLDivElement>) {
+    const state = drag.current;
+    if (!state.pressed) return;
+    state.pressed = false;
+    const el = event.currentTarget;
+    if (el.hasPointerCapture(event.pointerId)) el.releasePointerCapture(event.pointerId);
+    el.style.scrollSnapType = "";
+    el.style.cursor = "";
+    el.style.userSelect = "";
+  }
 
   // The arrows move between projects that have screenshots, wrapping at either end
   const viewable = work.filter(({ frames }) => screenshots(frames).length > 0);
@@ -499,10 +532,13 @@ export function SelectedWork() {
     <section
       id="selected-work"
       aria-labelledby="selected-work-title"
+      // Container units (cqw) exclude the page scrollbar, unlike vw, so the left edge lines up
+      // with the max-w-xl content column above and below
+      className="@container"
     >
       <h2
         id="selected-work-title"
-        className="mb-8 pl-[max(1.5rem,calc(50vw-16.5rem))] text-sm text-label"
+        className="mb-8 pl-[max(1.5rem,calc(50cqw-16.5rem))] text-sm text-label"
       >
         Selected Work
       </h2>
@@ -510,7 +546,19 @@ export function SelectedWork() {
         role="region"
         aria-label="Selected work gallery"
         tabIndex={0}
-        className="flex snap-x snap-mandatory gap-1 overflow-x-auto scroll-pl-[max(1.5rem,calc(50vw-16.5rem))] pr-6 pl-[max(1.5rem,calc(50vw-16.5rem))] [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-accent [&::-webkit-scrollbar]:hidden"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerEnd}
+        onPointerCancel={handlePointerEnd}
+        onDragStart={(event) => event.preventDefault()}
+        // A drag should not open the tile it ends on
+        onClickCapture={(event) => {
+          if (!drag.current.moved) return;
+          drag.current.moved = false;
+          event.preventDefault();
+          event.stopPropagation();
+        }}
+        className="flex snap-x snap-mandatory gap-1 overflow-x-auto scroll-pl-[max(1.5rem,calc(50cqw-16.5rem))] pr-6 pl-[max(1.5rem,calc(50cqw-16.5rem))] [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-accent [&::-webkit-scrollbar]:hidden"
       >
         {work.map((project, index) => {
           const { label, frames, links } = project;
