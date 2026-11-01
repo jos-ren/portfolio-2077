@@ -457,7 +457,10 @@ function FullScreenView({
         if (event.key === "ArrowRight") onStep(1);
       }}
       aria-label={project ? `${project.label} full screen view` : undefined}
-      className="fixed inset-0 m-0 h-dvh max-h-none w-dvw max-w-none bg-bg/95 p-0 sm:bg-bg/80 text-text backdrop:bg-transparent"
+      // On phones the dialog is only as tall as the dynamic viewport, so iOS Safari can leave the
+      // page showing in a strip under its bottom toolbar. A wide shadow in the same color as the
+      // background covers everything outside the dialog.
+      className="fixed inset-0 m-0 h-dvh max-h-none w-dvw max-w-none bg-bg/95 p-0 max-sm:shadow-[0_0_0_100vmax_color-mix(in_srgb,var(--bg)_95%,transparent)] sm:bg-bg/80 text-text backdrop:bg-transparent"
     >
       {project && (
         <>
