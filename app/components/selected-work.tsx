@@ -23,6 +23,27 @@ type Work = {
 
 const work: Work[] = [
   {
+    label: "FogCity",
+    links: [{ kind: "appstore" }], // not released yet
+    frames: [
+      {
+        kind: "phone",
+        src: "/projects/fogcity-1.png",
+        alt: "FogCity map with walked streets cleared from the fog and a chart of activity by year",
+      },
+      {
+        kind: "phone",
+        src: "/projects/fogcity-3.png",
+        alt: "FogCity heat map showing the places visited most often",
+      },
+      {
+        kind: "phone",
+        src: "/projects/fogcity-4.png",
+        alt: "FogCity privacy screen: no account, locations stay on the phone, export anytime",
+      },
+    ],
+  },
+  {
     label: "Muvi",
     links: [{ kind: "appstore" }], // not released yet
     frames: [
@@ -84,20 +105,6 @@ const work: Work[] = [
         kind: "browser",
         src: "/projects/room-planner.png",
         alt: "Room Planner floor view with a plan of five rooms, furniture and a properties panel",
-      },
-    ],
-  },
-  {
-    label: "Flag Guessr",
-    links: [
-      { kind: "github", href: "https://github.com/jos-ren/flag-guessr" },
-      { kind: "website", href: "https://jos-ren.github.io/flag-guessr/" },
-    ],
-    frames: [
-      {
-        kind: "browser",
-        src: "/projects/flag-guessr.png",
-        alt: "Flag Guessr home page with a play button and cards for world and continent flag quizzes",
       },
     ],
   },
@@ -667,7 +674,7 @@ export function SelectedWork() {
           <figure
             key={label}
             className={`group relative flex h-80 shrink-0 snap-start items-center justify-center overflow-hidden px-6 sm:h-[26rem] sm:px-16 ${
-              index % 2 === 0 ? "bg-surface" : "bg-primary"
+              index % 2 === 0 ? "bg-primary" : "bg-surface"
             }`}
           >
             <div className="flex items-center gap-3 transition-transform sm:gap-6 duration-500 ease-out group-hover:scale-[1.04]">

@@ -13,6 +13,7 @@ const projects: Entry[] = [
   { title: "Flag Guessr", meta: "June 2026", href: "https://jos-ren.github.io/flag-guessr/" },
   { title: "Room Planner", meta: "September 2026", href: "https://alexrussell.dev/room-planner/?mode=floor" },
   { title: "Muvi", meta: "Coming Soon" },
+  { title: "FogCity", meta: "Coming Soon" },
 ];
 
 // Playground hidden for now
