@@ -674,7 +674,8 @@ export function SelectedWork() {
           <figure
             key={label}
             className={`group relative flex h-80 shrink-0 snap-start items-center justify-center overflow-hidden px-6 sm:h-[26rem] sm:px-16 ${
-              index % 2 === 0 ? "bg-primary" : "bg-surface"
+              // Light mode starts on pink, dark mode starts on yellow
+              index % 2 === 0 ? "bg-surface dark:bg-primary" : "bg-primary dark:bg-surface"
             }`}
           >
             <div className="flex items-center gap-3 transition-transform sm:gap-6 duration-500 ease-out group-hover:scale-[1.04]">
